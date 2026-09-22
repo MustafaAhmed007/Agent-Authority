@@ -17,8 +17,9 @@ from .anomaly import AnomalyDetector
 from .storage import AuthorityStore, MemoryStore
 from .sqlite_store import SQLiteStore
 from .wire import SignedDecision
+from .key_store import PersistentSigner
 from .authority_graph import AuthorityGraph
 from .frameworks import AgentRuntimeAdapter, LangGraphAdapter, CrewAIAdapter, OpenHandsAdapter, ClaudeCodeAdapter, CodexAdapter, OpenCodeAdapter
 from .control_plane import ControlPlane
-__version__="0.3.0"
-__all__=["AgentIdentity","Capability","AuthorityToken","AuthorizationRequest","AuthorizationDecision","Decision","Policy","ExecutionEvent","VerificationResult","Authority","ExecutionGate","Verifier","ReplayEngine","DelegationManager","DataClass","AuthorityService","MCPGateway","ToolCall","MCPStdioProxy","Sandbox","SandboxLimits","DockerSandbox","DockerSandboxConfig","ToolTrust","ToolTrustRegistry","Feedback","LearningEngine","AnomalyDetector","AuthorityStore","MemoryStore","SQLiteStore","SignedDecision","AuthorityGraph","AgentRuntimeAdapter","LangGraphAdapter","CrewAIAdapter","OpenHandsAdapter","ClaudeCodeAdapter","CodexAdapter","OpenCodeAdapter","ControlPlane"]
+__version__="0.3.1"
+__all__=["AgentIdentity","Capability","AuthorityToken","AuthorizationRequest","AuthorizationDecision","Decision","Policy","ExecutionEvent","VerificationResult","Authority","ExecutionGate","Verifier","ReplayEngine","DelegationManager","DataClass","AuthorityService","MCPGateway","ToolCall","MCPStdioProxy","Sandbox","SandboxLimits","DockerSandbox","DockerSandboxConfig","ToolTrust","ToolTrustRegistry","Feedback","LearningEngine","AnomalyDetector","AuthorityStore","MemoryStore","SQLiteStore","SignedDecision","PersistentSigner","AuthorityGraph","AgentRuntimeAdapter","LangGraphAdapter","CrewAIAdapter","OpenHandsAdapter","ClaudeCodeAdapter","CodexAdapter","OpenCodeAdapter","ControlPlane"]
