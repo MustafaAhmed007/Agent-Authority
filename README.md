@@ -2,34 +2,59 @@
 
 **Let your agents act. Control what they can do. Prove what they did.**
 
-Open-source, local-first runtime authority layer for AI agents. Agent Authority binds identity → task → capability → policy → risk → approval → execution → verification → evidence.
+Agent Authority is a vendor-neutral runtime authority layer for AI agents. It binds **identity → task → capability → policy → trust → risk → approval → execution → verification → evidence** and fails closed when authority is missing.
 
-## Runtime surface
+## What is implemented
 
-- Cryptographic Ed25519 signing primitives
-- Task-scoped, expiring and revocable authority tokens
-- Capability/resource matching and deterministic policy evaluation
-- Risk scoring and human approval boundary
-- Action/cost budgets
-- Execution gate and transport-neutral MCP gateway
-- Tamper-evident audit chain and replay
+- Ed25519 identity/signing primitives plus persistent key storage
+- Task-scoped, expiring, revocable authority tokens
+- Capability/resource matching and deterministic policy-as-code
+- Context-aware risk scoring and human approval gates
+- Action and cost budgets
+- Execution gate and MCP JSON-RPC stdio interception
+- Durable SQLite token/event persistence
+- Tamper-evident hash-chained audit ledger and replay
 - Independent verification contract
-- Delegation, trust registry, anomaly signals and advisory learning feedback
-- Sandbox and framework-adapter boundaries
+- Agent-to-agent delegation
+- Tool trust registry, anomaly signals and advisory learning feedback
+- Authority graph
+- Docker isolation adapter with network-off, read-only, dropped-capability defaults
+- Framework adapters for LangGraph, CrewAI, OpenHands, Claude Code, Codex and OpenCode
+- Local authenticated operational control plane
+- Production Docker/Compose deployment
+- CLI, regression suite and GitHub Actions CI
 
 ## Quick start
 
 ```bash
 pip install -e ".[dev]"
 authority init
+pytest -q
 authority doctor
-pytest
 ```
 
-## Architecture
+## Run the control plane
+
+```bash
+export AUTHORITY_ADMIN_SECRET="replace-with-a-long-random-secret"
+authority control --host 127.0.0.1 --port 8765
+```
+
+Health is available at `/health`. Operational endpoints require `Authorization: Bearer <secret>`.
+
+## Docker deployment
+
+```bash
+export AUTHORITY_ADMIN_SECRET="replace-with-a-long-random-secret"
+docker compose up --build -d
+```
+
+SQLite state is stored in the persistent `authority-data` volume. The container runs as a non-root user with a read-only root filesystem and a constrained `/tmp` filesystem.
+
+## Runtime architecture
 
 ```text
-Human / Owner
+Owner / Human
       ↓
 Agent Identity + Session
       ↓
@@ -39,28 +64,40 @@ Capability + Policy + Trust + Risk
       ↓
 ALLOW / DENY / APPROVAL_REQUIRED
       ↓
-Execution Gate / MCP Gateway
+Execution Gate / MCP Interceptor
       ↓
 Sandbox / Tool / API
       ↓
 Independent Verification
       ↓
-Proof + Audit Ledger
+Signed Proof + Audit Ledger
       ↓
-Replay + Anomaly + Learning Feedback
+Durable Storage
+      ↓
+Replay + Authority Graph + Anomaly Signals
+      ↓
+Advisory Learning Feedback
 ```
 
-## Security boundary
+## Security model
 
-Learning is advisory and cannot grant privileges. Sandbox.py is an explicit adapter boundary and is **not** a security sandbox by itself; production deployments must connect a real OS/container isolation implementation before executing untrusted workloads. CI is configured in `.github/workflows/ci.yml`; GitHub status must be green before a release is considered verified.
+- Least privilege and task-bounded delegation.
+- No silent privilege escalation.
+- Unauthorized actions fail closed.
+- High-risk actions can require explicit human approval.
+- Learning is advisory only and cannot grant privileges.
+- Authority decisions can be signed and verified independently.
+- Audit events form a tamper-evident hash chain.
+- Docker execution uses a concrete isolation adapter; `Sandbox` remains the framework boundary for other isolation technologies.
+- The control plane is authenticated when `AUTHORITY_ADMIN_SECRET` is configured and should be placed behind TLS/reverse-proxy controls for network exposure.
 
-## Production roadmap
+## Verification
 
-The repository now contains the authority runtime foundations. Production deployment work consists of replacing adapter boundaries with concrete hardened integrations: MCP transport interception, OS/container sandboxing, durable shared audit storage, signed wire-level authority tokens, framework-specific adapters, and an enterprise control plane.
+GitHub Actions runs dependency installation, Ruff correctness checks and the full pytest suite on every push to `main`. The current production-runtime build has a green CI run for the authority kernel, durable storage, signing, graph and MCP integration tests.
 
-## Design principles
+## Version
 
-Least privilege, task-bounded delegation, explainability, local-first operation, no silent privilege escalation, evidence over agent claims, protocol compatibility, deterministic security decisions, fail-closed execution, advisory-only learning.
+`0.3.1`
 
 ## License
 
