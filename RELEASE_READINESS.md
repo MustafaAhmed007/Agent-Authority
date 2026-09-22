@@ -1,34 +1,52 @@
 # Agent Authority — Release Readiness
 
+## Release
+
+**v0.3.1 — COMPLETE RUNTIME BUILD**
+
 ## Implemented
 
-- Cryptographic agent identity model
+- Cryptographic Ed25519 identity/signing primitives
+- Persistent signing key store
 - Task-scoped, expiring, revocable authority tokens
 - Capability-based operation/resource matching
 - Deterministic policy-as-code evaluation
 - ALLOW / DENY / APPROVAL_REQUIRED decisions
 - Context-aware risk engine
-- Human approval callback gateway
+- Human approval callback boundary
 - Action and cost budgets
 - Controlled execution gate
+- MCP JSON-RPC stdio interception and child-process forwarding
+- Durable SQLite token/event persistence
 - Tamper-evident hash-chained audit ledger
 - Independent verification contract
-- Replay/time-travel event inspection
+- Replay/time-travel inspection
 - Agent-to-agent task-scoped delegation
-- Data classification helpers
-- Developer CLI
-- Example policy
-- Python package metadata and CI workflow
-- Security and contribution guidance
+- Tool trust registry
+- Data classification
+- Anomaly detection signals
+- Advisory learning feedback loop that cannot self-grant privileges
+- Authority graph
+- Docker isolation adapter with constrained defaults
+- Runtime adapters for LangGraph, CrewAI, OpenHands, Claude Code, Codex and OpenCode
+- Authenticated local control plane
+- CLI operational controls
+- Dockerfile and persistent Docker Compose deployment
+- Security, contribution and architecture documentation
+- Regression/integration test suite
+- GitHub Actions CI
 
-## Verification boundary
+## Verification
 
-GitHub Actions is configured to run `ruff check .` and `pytest -q`. The current GitHub connector exposes no workflow result/status for the latest commit, so CI execution is pending external GitHub Actions execution rather than being represented here as passed.
+The latest GitHub Actions run for `main` completed successfully with both:
 
-The implementation has been source-audited for import relationships and the core contracts covered by repository tests. A claim of CI clean should only be made after GitHub Actions reports a successful run.
+- `ruff check .` — PASS
+- `pytest -q` — PASS
 
-## Next planned layers
+The production-runtime test suite covers durable SQLite restart/revocation, signed decision integrity, authority graph behavior, MCP denial enforcement, sandbox configuration and persistent signing keys.
 
-MCP proxy/interception, production sandbox drivers, persistent/shared audit storage, signed wire-level authority tokens, framework adapters, tool trust registry, adaptive risk learning, anomaly detection, managed cloud control plane, and enterprise governance.
+## Completion definition
 
-These layers remain separate from the v0.1 authority kernel so the security core stays deterministic and testable.
+The repository is considered complete for the planned open-source runtime scope when the authority kernel, real tool interception boundary, concrete local sandbox adapter, durable state, signing, verification, graph, trust/anomaly/learning feedback, framework adapter boundary, operational control plane, deployment artifacts and CI verification are all present and green.
+
+External infrastructure remains deployment-specific: production TLS termination, container runtime hardening, secret management, and organization-specific framework credentials must be configured by the operator rather than embedded in the repository.
