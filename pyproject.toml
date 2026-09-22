@@ -1,7 +1,7 @@
 [project]
 name = "agent-authority"
-version = "0.2.0"
-description = "Vendor-neutral runtime authority, authorization, verification and audit layer for AI agents."
+version = "0.3.0"
+description = "Vendor-neutral runtime authority, authorization, verification, sandboxing and audit layer for AI agents."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
