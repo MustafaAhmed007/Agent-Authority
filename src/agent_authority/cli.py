@@ -1,6 +1,7 @@
 """Developer and operations CLI."""
 from __future__ import annotations
 import json
+import os
 import typer
 from rich import print
 from .authority import Authority
@@ -9,11 +10,11 @@ from .models import Policy
 from .sqlite_store import SQLiteStore
 
 app=typer.Typer(help="Agent Authority runtime control CLI.")
-authority=Authority()
+authority=Authority(store=SQLiteStore(os.getenv("AUTHORITY_DB","authority.db")))
 
 @app.command()
 def init(db:str="authority.db"):
-    SQLiteStore(db).close(); print(f"[bold green]Initialized durable authority store: {db}[/bold green]")
+    store=SQLiteStore(db); store.close(); print(f"[bold green]Initialized durable authority store: {db}[/bold green]")
 
 @app.command()
 def doctor():
@@ -37,8 +38,8 @@ def policy(path:str):
     print(f"Loaded {len(data.get('rules',[]))} policies.")
 
 @app.command()
-def control(host:str="127.0.0.1",port:int=8765):
+def control(host:str="127.0.0.1",port:int=8765,admin_secret:str|None=None):
     print(f"Control plane listening on http://{host}:{port}")
-    ControlPlane(authority).serve(host,port)
+    ControlPlane(authority,admin_secret).serve(host,port)
 
 if __name__=="__main__": app()
