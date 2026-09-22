@@ -1,6 +1,6 @@
 [project]
 name = "agent-authority"
-version = "0.1.0"
+version = "0.2.0"
 description = "Vendor-neutral runtime authority, authorization, verification and audit layer for AI agents."
 readme = "README.md"
 requires-python = ">=3.11"
